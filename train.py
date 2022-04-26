@@ -27,7 +27,7 @@ transform = T.Compose([
                           split_labels=True, add_negative_train_samples=True),
     ])
 dataset = Planetoid("datasets", args.dataset, transform=transform)
-data = dataset[0].to(device)
+data = dataset[0]
 all_edge_index = data.edge_index
 
 
