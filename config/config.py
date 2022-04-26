@@ -31,7 +31,7 @@ def parse_args():
 
     if args.config_file:
         with open(args.config_file, 'r') as f:
-            parser.set_defaults(**yaml.load(f))
+            parser.set_defaults(**yaml.safe_load(f))
 
     args = parser.parse_args(unprocessed_args)
     visualize_config(args)

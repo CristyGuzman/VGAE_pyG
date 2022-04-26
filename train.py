@@ -20,10 +20,16 @@ model = DeepVGAE(args).to(device)
 optimizer = Adam(model.parameters(), lr=args.lr)
 
 os.makedirs("datasets", exist_ok=True)
-dataset = Planetoid("datasets", args.dataset, transform=T.NormalizeFeatures())
+transform = T.Compose([
+        T.NormalizeFeatures(),
+        T.ToDevice(C.DEVICE),
+        T.RandomLinkSplit(num_val=0.05, num_test=0.1, is_undirected=True,
+                          split_labels=True, add_negative_train_samples=True),
+    ])
+dataset = Planetoid("datasets", args.dataset, transform=transform)
 data = dataset[0].to(device)
 all_edge_index = data.edge_index
-data = train_test_split_edges(data, 0.05, 0.1)
+
 
 for epoch in range(args.epoch):
     model.train()
