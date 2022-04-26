@@ -28,19 +28,20 @@ transform = T.Compose([
     ])
 dataset = Planetoid("datasets", args.dataset, transform=transform)
 data = dataset[0]
-all_edge_index = data.edge_index
+train_data, valid_data, test_data = data
+all_edge_index = train_data.edge_index
 
 
 for epoch in range(args.epoch):
     model.train()
     optimizer.zero_grad()
-    loss = model.loss(data.x, data.train_pos_edge_index, all_edge_index)
+    loss = model.loss(train_data.x, train_data.pos_edge_label_index, all_edge_index)
     loss.backward()
     optimizer.step()
     if epoch % 2 == 0:
         model.eval()
-        roc_auc, ap = model.single_test(data.x,
-                                        data.train_pos_edge_index,
-                                        data.test_pos_edge_index,
-                                        data.test_neg_edge_index)
+        roc_auc, ap = model.single_test(train_data.x,
+                                        train_data.pos_edge_label_index,
+                                        test_data.pos_edge_label_index,
+                                        test_data.neg_edge_label_index)
         print("Epoch {} - Loss: {} ROC_AUC: {} Precision: {}".format(epoch, loss.cpu().item(), roc_auc, ap))
