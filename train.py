@@ -22,7 +22,7 @@ optimizer = Adam(model.parameters(), lr=args.lr)
 os.makedirs("datasets", exist_ok=True)
 transform = T.Compose([
         T.NormalizeFeatures(),
-        T.ToDevice(C.DEVICE),
+        T.ToDevice(device),
         T.RandomLinkSplit(num_val=0.05, num_test=0.1, is_undirected=True,
                           split_labels=True, add_negative_train_samples=True),
     ])
